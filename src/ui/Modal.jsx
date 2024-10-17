@@ -1,3 +1,5 @@
+import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
 const StyledModal = styled.div`
@@ -48,3 +50,20 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+//这个属性会对元素的背景应用一种模糊效果，达到让背景变模糊的目的。backdrop-filter 的效果是在元素的后面，而不是元素本身，所以当 Overlay 元素覆盖整个屏幕（通过 position: fixed; 和 width: 100%; height: 100vh; 实现），就会对它下面的内容（页面背景）应用模糊效果。
+function Modal({ children, onClose }) {
+  return createPortal(
+    <Overlay>
+      <StyledModal>
+        <Button onClick={onClose}>
+          <HiXMark />
+        </Button>
+        <div>{children}</div>
+      </StyledModal>
+    </Overlay>,
+    document.body
+  );
+}
+
+export default Modal;

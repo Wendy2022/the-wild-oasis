@@ -6,13 +6,16 @@ import { useSettings } from "./useSettings";
 import { useUpdateSetting } from "./useUpdateSetting";
 
 function UpdateSettingsForm() {
-  const { settings, isLoading } = useSettings();
   const {
-    maxBookingLength,
-    maxGuestsPerBooking,
-    minBookingLength,
-    breakfastPrice,
-  } = settings;
+    settings: {
+      maxBookingLength,
+      maxGuestsPerBooking,
+      minBookingLength,
+      breakfastPrice,
+    } = {},
+    isLoading,
+  } = useSettings();
+
   //console.log(settings);
   const { updateSetting, isUpdating } = useUpdateSetting();
 
