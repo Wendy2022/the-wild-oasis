@@ -16,8 +16,6 @@ export async function createEditCabin(newCabin, id) {
   //如果newCabin.image已经是一个完整的Supabase存储路径，说明这是一个已经上传过的图片，不需要重新生成路径
 
   const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
-  // 如果图片路径已存在且是来自Supabase的URL，并且用户没有上传新的图片，则跳过图片上传
-  const shouldUploadImage = !hasImagePath || typeof newCabin.image !== "string";
 
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
@@ -44,18 +42,19 @@ export async function createEditCabin(newCabin, id) {
     throw new Error("Cabin could not be created");
   }
   //2. upload files from javascript reference supabase doc
-  if (shouldUploadImage) {
-    const { error: storageError } = await supabase.storage
-      .from("cabin-images")
-      .upload(imageName, newCabin.image);
-    // delete the cabin if there is an error
-    if (storageError) {
-      await supabase.from("cabins").delete().eq("id", data.id);
-      console.error(storageError);
-      throw new Error(
-        "Cabin image could not be uploaded and the cabin was not created"
-      );
-    }
+  if (hasImagePath) {
+    return data;
+  }
+  const { error: storageError } = await supabase.storage
+    .from("cabin-images")
+    .upload(imageName, newCabin.image);
+  // delete the cabin if there is an error
+  if (storageError) {
+    await supabase.from("cabins").delete().eq("id", data.id);
+    console.error(storageError);
+    throw new Error(
+      "Cabin image could not be uploaded and the cabin was not created"
+    );
   }
 
   return data;
