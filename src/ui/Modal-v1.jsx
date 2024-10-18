@@ -1,8 +1,6 @@
-import { cloneElement, createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
-import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -52,51 +50,9 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
-//1. create new context
-const ModalContext = createContext();
 
-//2. create parent
-function Modal({ children }) {
-  const [openName, setOpenName] = useState("");
-  const close = () => setOpenName("");
-  const open = (name) => setOpenName(name);
-  return (
-    <ModalContext.Provider value={{ openName, close, open }}>
-      {children}
-    </ModalContext.Provider>
-  );
-}
-//3. create children
-function Open({ children, opens: opensWindowName }) {
-  const { open } = useContext(ModalContext);
-  return cloneElement(children, { onClick: () => open(opensWindowName) });
-}
-
-function Window({ children, name }) {
-  const { openName, close } = useContext(ModalContext);
-
-  const ref = useOutsideClick(close);
-  if (name !== openName) {
-    return null;
-  }
-  return createPortal(
-    <Overlay>
-      <StyledModal ref={ref}>
-        <Button onClick={close}>
-          <HiXMark />
-        </Button>
-        <div>{cloneElement(children, { onCloseModal: close })}</div>
-      </StyledModal>
-    </Overlay>,
-    document.body
-  );
-}
-//4. link the child to parent
-Modal.Open = Open;
-Modal.Window = Window;
-export default Modal;
 //这个属性会对元素的背景应用一种模糊效果，达到让背景变模糊的目的。backdrop-filter 的效果是在元素的后面，而不是元素本身，所以当 Overlay 元素覆盖整个屏幕（通过 position: fixed; 和 width: 100%; height: 100vh; 实现），就会对它下面的内容（页面背景）应用模糊效果。
-/* function Modal({ children, onClose }) {
+function Modal({ children, onClose }) {
   return createPortal(
     <Overlay>
       <StyledModal>
@@ -110,4 +66,4 @@ export default Modal;
   );
 }
 
-export default Modal; */
+export default Modal;
