@@ -36,10 +36,6 @@ function ProtectedRoute({ children }) {
         <Spinner />
       </FullPage>
     );
-  //2.
-  /* if (!isAuthenticated) {
-    navigate("/login");
-  } */
   //4. if there is a user , render the app
   if (isAuthenticated) {
     return children;

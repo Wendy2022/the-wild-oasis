@@ -1,5 +1,23 @@
 import supabase from "./supabase";
 
+export async function signup({ fullName, email, password }) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        fullName,
+        avatar: "",
+      },
+    },
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
+  console.log("signupApi return data:", data);
+  return data;
+}
+
 export async function login({ email, password }) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -17,7 +35,7 @@ export async function getCurrentUser() {
     await supabase.auth.getSession();
 
   if (sessionError) throw new Error("Login error", { cause: sessionError });
-  if (!session.session) return null;
+  if (!session?.session) return null;
 
   const { data: user, error: userError } = await supabase.auth.getUser();
 
