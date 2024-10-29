@@ -85,6 +85,7 @@ function Menus({ children }) {
 function Toggle({ id }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
   function handleClick(e) {
+    //console.log("click");
     const rect = e.target.closest("button").getBoundingClientRect();
     //console.log(e.target.closest("button"));
     //console.log(rect);
